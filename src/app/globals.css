@@ -1,0 +1,110 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-bg: #0e0c0a;
+  --color-surface: #141210;
+  --color-card: #1a1714;
+  --color-card-hover: #1f1c18;
+  --color-border: #2a2420;
+  --color-border-subtle: #1e1b17;
+
+  --color-cream: #e8dcc8;
+  --color-cream-muted: #9a8a78;
+  --color-cream-faint: #5a4e42;
+
+  --color-peach: #c4855a;
+  --color-peach-light: #d4956a;
+  --color-peach-faint: #3d2a1e;
+
+  --color-sage: #7a9e7e;
+  --color-sage-faint: #1e2e20;
+
+  --color-amber: #c4a55a;
+  --color-amber-faint: #2e2614;
+
+  --color-rose: #c47a7a;
+  --color-rose-faint: #2e1e1e;
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-serif: 'Georgia', 'Times New Roman', serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  background: #0e0c0a;
+  color: #e8dcc8;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #141210;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2a2420;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3a342e;
+}
+
+.font-serif-accent {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-style: italic;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+input[type="text"],
+input[type="date"],
+input[type="number"],
+textarea,
+select {
+  background: #141210;
+  color: #e8dcc8;
+  border: 1px solid #2a2420;
+  border-radius: 8px;
+  padding: 8px 12px;
+  outline: none;
+  width: 100%;
+  font-size: 0.875rem;
+  transition: border-color 0.15s;
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+  border-color: #c4855a;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #5a4e42;
+}
+
+select option {
+  background: #1a1714;
+  color: #e8dcc8;
+}
