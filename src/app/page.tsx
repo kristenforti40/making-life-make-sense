@@ -86,7 +86,7 @@ function Card({ children, className = "" }: { children: ReactNode; className?: s
 
 function Badge({ children, tone = "blue" }: { children: ReactNode; tone?: Tone }) {
   const tones = {
-    blue: "border-[#004CFF]/25 bg-[#004CFF]/10 text-[#004CFF]",
+    blue: "border-[#D94F8C]/25 bg-[#D94F8C]/10 text-[#D94F8C]",
     green: "border-[#21A85B]/25 bg-[#21A85B]/10 text-[#157a42]",
     teal: "border-[#16C7C1]/25 bg-[#16C7C1]/12 text-[#0b7774]",
     mint: "border-[#76C893]/30 bg-[#76C893]/14 text-[#2d7d4e]",
@@ -118,9 +118,9 @@ export default function HomePage() {
         <aside className="border-b border-[var(--line-local)] bg-[var(--sidebar)] px-4 py-4 lg:sticky lg:top-0 lg:h-screen lg:w-60 lg:overflow-y-auto lg:border-b-0 lg:border-r lg:px-4 lg:py-4">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="grid h-9 w-9 place-items-center rounded-lg bg-[#004CFF] text-sm font-black tracking-[-0.08em] text-white">KF</div>
+              <div className="grid h-9 w-9 place-items-center rounded-lg bg-[#D94F8C] text-sm font-black tracking-[-0.08em] text-white">KF</div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#004CFF]">Kristen Forti</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#D94F8C]">Kristen Forti</p>
                 <p className="text-sm font-semibold text-[var(--text)]">Excellent OS</p>
               </div>
             </div>
@@ -139,7 +139,7 @@ export default function HomePage() {
                 {group.title ? <p className="mb-1.5 px-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--faint)]">{group.title}</p> : null}
                 <div className="grid gap-0.5">
                   {group.items.map((item) => (
-                    <a key={item} href="#" className={`rounded-lg px-2.5 py-1.5 text-sm ${item === "Home" ? "bg-[#004CFF] text-white" : "text-[var(--muted-local)] hover:bg-[var(--subtle)] hover:text-[var(--text)]"}`}>{item}</a>
+                    <a key={item} href="#" className={`rounded-lg px-2.5 py-1.5 text-sm ${item === "Home" ? "bg-[#D94F8C] text-white" : "text-[var(--muted-local)] hover:bg-[var(--subtle)] hover:text-[var(--text)]"}`}>{item}</a>
                   ))}
                 </div>
               </div>
@@ -151,7 +151,7 @@ export default function HomePage() {
           <form onSubmit={(event) => { event.preventDefault(); submitCapture(); }} className="sticky top-0 z-10 border-b border-[var(--line-local)] bg-[var(--sidebar)]/92 px-4 py-3 backdrop-blur lg:px-6">
             <div className="mx-auto flex max-w-6xl gap-2 sm:items-center">
               <input value={capture} onChange={(event) => setCapture(event.target.value)} className="min-h-10 flex-1 rounded-lg border border-[var(--line-local)] bg-[var(--surface-strong)] px-3 text-sm text-[var(--text)] outline-none placeholder:text-[var(--faint)]" aria-label="Capture" placeholder="" />
-              <button className="rounded-lg bg-[#004CFF] px-4 py-2 text-sm font-semibold text-white hover:bg-[#003fd4]">Add</button>
+              <button className="rounded-lg bg-[#D94F8C] px-4 py-2 text-sm font-semibold text-white hover:bg-[#C63D79]">Add</button>
             </div>
           </form>
 
@@ -162,7 +162,7 @@ export default function HomePage() {
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted-local)]">Start with what needs attention, then move into writing, memory, and the deeper vaults when you are ready.</p>
               </div>
               <Card className="bg-[var(--surface-strong)]">
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#004CFF]">Daily Standard</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#D94F8C]">Daily Standard</p>
                 <p className="mt-2 text-sm leading-6 text-[var(--muted-local)]">{dailyStandard}</p>
               </Card>
             </header>
@@ -179,7 +179,7 @@ export default function HomePage() {
               <div className="space-y-6">
                 <Card>
                   <div className="mb-4 flex items-center justify-between gap-3">
-                    <div><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#004CFF]">Start Here</p><h2 className="text-lg font-semibold">Today needs your attention</h2></div>
+                    <div><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#D94F8C]">Start Here</p><h2 className="text-lg font-semibold">Today needs your attention</h2></div>
                     <Badge tone="blue">3 priorities</Badge>
                   </div>
                   <div className="grid gap-3">
@@ -194,7 +194,7 @@ export default function HomePage() {
 
                 <Card>
                   <div className="mb-4 flex items-center justify-between gap-3">
-                    <div><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#004CFF]">Review</p><h2 className="text-lg font-semibold">AI suggestions, not auto-filing</h2></div>
+                    <div><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#D94F8C]">Review</p><h2 className="text-lg font-semibold">AI suggestions, not auto-filing</h2></div>
                     <Badge tone="blue">Approve first</Badge>
                   </div>
                   <div className="grid gap-3">
@@ -205,10 +205,10 @@ export default function HomePage() {
                           <Badge tone={item.status === "approved" ? "green" : item.status === "deleted" ? "tan" : "blue"}>{item.status}</Badge>
                         </div>
                         <div className="mt-3 flex flex-wrap gap-2">
-                          <button type="button" className="rounded-md bg-[#004CFF] px-3 py-2 text-xs font-semibold text-white" onClick={() => setStatus(item.id, "approved")}>Approve</button>
+                          <button type="button" className="rounded-md bg-[#D94F8C] px-3 py-2 text-xs font-semibold text-white" onClick={() => setStatus(item.id, "approved")}>Approve</button>
                           <button type="button" className="rounded-md bg-[#21A85B] px-3 py-2 text-xs font-semibold text-white" onClick={() => setStatus(item.id, "edited")}>Edit</button>
                           <button type="button" className="rounded-md border border-[var(--line-local)] bg-[var(--surface-strong)] px-3 py-2 text-xs font-semibold text-[var(--muted-local)]" onClick={() => setStatus(item.id, "deleted")}>Delete</button>
-                          <button type="button" className="rounded-md border border-[#004CFF]/25 bg-[#004CFF]/10 px-3 py-2 text-xs font-semibold text-[#004CFF]" onClick={() => setStatus(item.id, "reclassified")}>Reclassify</button>
+                          <button type="button" className="rounded-md border border-[#D94F8C]/25 bg-[#D94F8C]/10 px-3 py-2 text-xs font-semibold text-[#D94F8C]" onClick={() => setStatus(item.id, "reclassified")}>Reclassify</button>
                         </div>
                       </div>
                     ))}
@@ -218,7 +218,7 @@ export default function HomePage() {
 
               <aside className="space-y-6">
                 <Card>
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#004CFF]">Daily Brief</p>
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#D94F8C]">Daily Brief</p>
                   <div className="mt-3 space-y-3">{insights.map((insight) => <p key={insight} className="rounded-lg border border-[var(--line-local)] bg-[var(--surface-strong)] p-3 text-sm leading-6 text-[var(--muted-local)]">{insight}</p>)}</div>
                 </Card>
                 <Card>
