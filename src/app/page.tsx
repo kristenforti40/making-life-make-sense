@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties, type ReactNode } from "react";
 
 type Suggestion = {
   id: string;
@@ -11,25 +11,34 @@ type Suggestion = {
   status: "pending" | "approved" | "edited" | "deleted" | "reclassified";
 };
 
-const priorities = ["Send application follow-up", "Review wrong answer journal", "Outline excellence essay"];
-const insights = [
-  "You have mentioned excellence 12 times, usually beside reputation, quality, and discipline.",
-  "Your accuracy appears to drop most on abstract causal reasoning.",
-  "The beauty/truth/reputation cluster could become a Substack essay this week.",
+type Tone = "blue" | "green" | "turquoise" | "rose" | "burgundy" | "tan";
+
+const navGroups = [
+  { title: "Start", items: ["Home", "Capture", "Review", "Memory"] },
+  { title: "Create", items: ["Writing", "Ideas", "Media"] },
+  { title: "Life", items: ["Daily", "Faith", "LSAT", "Fitness"] },
+  { title: "World", items: ["Career", "People", "Calendar", "Integrations"] },
 ];
+
+const priorities = [
+  { title: "Review 5 AI suggestions", area: "Review", tone: "blue" as Tone },
+  { title: "Outline excellence essay", area: "Writing", tone: "turquoise" as Tone },
+  { title: "45 minute LR drill", area: "LSAT", tone: "green" as Tone },
+];
+
 const modules = [
-  ["Memory", "Ask my brain, semantic search, recurring themes, and connections."],
-  ["Writing Atelier", "Fragments, drafts, quotes, outlines, and AI essay angles."],
-  ["Idea Vault", "Raw, incubating, promising, execute-now, and archived ideas."],
-  ["Media Vault", "Podcasts, books, articles, videos, quotes, sermons, and links."],
-  ["Daily Log", "Wake time, LSAT, devotional, workouts, mood, energy, focus."],
-  ["Devotional", "Verse, prayer list, spiritual themes, and related writing ideas."],
-  ["LSAT", "Sessions, accuracy, wrong answer journal, and flaw patterns."],
-  ["Fitness", "Runs, workouts, marathon goal, mileage, soreness, and energy."],
-  ["Career", "Applications, firms, schools, deadlines, resumes, and prep."],
-  ["People", "Contacts, cadence, overdue follow-ups, and prayer connections."],
-  ["Calendar", "Mock time blocks and future Google Calendar sync."],
-  ["Integrations", "Google, Gmail, Docs, Photos, OpenAI, Plaid, PWA, and voice."],
+  ["Capture", "One calm inbox for thoughts, links, photos, notes, workouts, and tasks."],
+  ["Review", "AI extracts possible objects. You approve before anything files."],
+  ["Memory", "Search across themes, repeats, people, writing, faith, and decisions."],
+  ["Writing", "Fragments, outlines, questions, drafts, and essay angles."],
+  ["Ideas", "Incubating ideas can stay ideas until they earn execution."],
+  ["LSAT", "Study minutes, section type, accuracy, wrong answers, and flaw patterns."],
+];
+
+const insights = [
+  "Excellence is recurring as a standards theme, not just a productivity theme.",
+  "Beauty, truth, and reputation keep connecting to writing and career decisions.",
+  "Your system should separate urgent execution from slow-burn incubation.",
 ];
 
 function classifyCapture(text: string): Suggestion[] {
@@ -38,37 +47,51 @@ function classifyCapture(text: string): Suggestion[] {
   const add = (type: string, destination: string, body: string, confidence: number) => {
     suggestions.push({ id: `${Date.now()}-${suggestions.length}`, type, destination, text: body, confidence, status: "pending" });
   };
-  if (t.includes("follow up") || t.includes("email") || t.includes("call")) add("person_follow_up", "People", "Log the follow-up and preserve the relationship context.", 86);
-  if (t.includes("lsat") || t.includes("logical reasoning") || t.includes("drill")) add("lsat_log", "LSAT", "Create an LSAT study note and flag any flaw-pattern language.", 91);
-  if (t.includes("run") || t.includes("workout") || t.includes("marathon")) add("workout_log", "Fitness", "File this as training context with energy and soreness notes.", 84);
-  if (t.includes("verse") || t.includes("prayer") || t.includes("god") || t.includes("devotional")) add("devotional_entry", "Devotional", "Save the faith reflection and connect it to recurring themes.", 88);
-  if (t.includes("essay") || t.includes("substack") || t.includes("write") || t.includes("beauty") || t.includes("truth")) add("writing_fragment", "Writing Atelier", "Preserve this as a writing fragment and suggest an essay angle.", 90);
-  if (t.includes("idea") || t.includes("business") || t.includes("product") || t.includes("system")) add("idea", "Idea Vault", "Store this as an idea without forcing it into a task.", 82);
-  if (t.includes("tomorrow") || t.includes("deadline") || t.includes("schedule") || t.includes("block")) add("calendar_event", "Calendar", "Suggest a calendar block or reminder for the time-sensitive part.", 78);
+  if (t.includes("follow up") || t.includes("email") || t.includes("call")) add("person follow-up", "People", "Log the follow-up and preserve the relationship context.", 86);
+  if (t.includes("lsat") || t.includes("logical reasoning") || t.includes("drill")) add("LSAT log", "LSAT", "Create an LSAT study note and flag any flaw-pattern language.", 91);
+  if (t.includes("run") || t.includes("workout") || t.includes("marathon")) add("workout log", "Fitness", "File this as training context with energy and soreness notes.", 84);
+  if (t.includes("verse") || t.includes("prayer") || t.includes("god") || t.includes("devotional")) add("devotional entry", "Faith", "Save the faith reflection and connect it to recurring themes.", 88);
+  if (t.includes("essay") || t.includes("substack") || t.includes("write") || t.includes("beauty") || t.includes("truth")) add("writing fragment", "Writing", "Preserve this as a writing fragment and suggest an essay angle.", 90);
+  if (t.includes("idea") || t.includes("business") || t.includes("product") || t.includes("system")) add("idea", "Ideas", "Store this as an idea without forcing it into a task.", 82);
+  if (t.includes("tomorrow") || t.includes("deadline") || t.includes("schedule") || t.includes("block")) add("calendar option", "Calendar", "Suggest a calendar block or reminder for the time-sensitive part.", 78);
   if (!suggestions.length) {
-    add("idea", "Idea Vault", "Keep as a raw idea for later review.", 66);
-    add("task", "Review Later", "Ask whether this belongs in writing, projects, or daily reflection.", 54);
+    add("raw thought", "Review", "Keep this in review until the destination is clear.", 64);
   }
   return suggestions;
 }
 
-function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <section className={`rounded-lg border border-[var(--line)] bg-white/85 p-4 shadow-sm ${className}`}>{children}</section>;
+function themeVars(mode: "light" | "dark") {
+  return {
+    "--app-bg": mode === "light" ? "#f6f3ed" : "#11100e",
+    "--sidebar": mode === "light" ? "#fffdf8" : "#171512",
+    "--surface": mode === "light" ? "rgba(255,255,255,0.84)" : "rgba(31,29,25,0.88)",
+    "--surface-strong": mode === "light" ? "#ffffff" : "#211f1b",
+    "--subtle": mode === "light" ? "#faf7f1" : "#191713",
+    "--line-local": mode === "light" ? "#e5ddd1" : "#353129",
+    "--text": mode === "light" ? "#171512" : "#f2eadf",
+    "--muted-local": mode === "light" ? "#6f675c" : "#a79b8d",
+    "--faint": mode === "light" ? "#948b80" : "#756a5f",
+  } as CSSProperties & Record<string, string>;
 }
 
-function Badge({ children, tone = "blue" }: { children: React.ReactNode; tone?: "blue" | "green" | "turquoise" | "rose" | "burgundy" | "tan" }) {
+function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return <section className={`rounded-xl border border-[var(--line-local)] bg-[var(--surface)] p-4 shadow-sm ${className}`}>{children}</section>;
+}
+
+function Badge({ children, tone = "blue" }: { children: ReactNode; tone?: Tone }) {
   const tones = {
     blue: "border-[#004CFF]/25 bg-[#004CFF]/10 text-[#004CFF]",
-    green: "border-[#21A85B]/25 bg-[#21A85B]/10 text-[#14743d]",
-    turquoise: "border-[#16C7C1]/25 bg-[#16C7C1]/10 text-[#0b7774]",
+    green: "border-[#21A85B]/25 bg-[#21A85B]/10 text-[#157a42]",
+    turquoise: "border-[#16C7C1]/25 bg-[#16C7C1]/12 text-[#0b7774]",
     rose: "border-[#F4B7C6]/45 bg-[#F4B7C6]/28 text-[#8b3150]",
     burgundy: "border-[#7B0F2E]/25 bg-[#7B0F2E]/10 text-[#7B0F2E]",
-    tan: "border-[#D6B98C]/40 bg-[#D6B98C]/20 text-[#6f5730]",
+    tan: "border-[#D6B98C]/40 bg-[#D6B98C]/20 text-[#755d35]",
   };
-  return <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${tones[tone]}`}>{children}</span>;
+  return <span className={`inline-flex rounded-md border px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] ${tones[tone]}`}>{children}</span>;
 }
 
 export default function HomePage() {
+  const [mode, setMode] = useState<"light" | "dark">("light");
   const [capture, setCapture] = useState("Substack idea: excellence is quality control over time. Follow up with Sarah and schedule a 45 minute LSAT drill tomorrow.");
   const [queue, setQueue] = useState<Suggestion[]>(() => classifyCapture(capture));
   const pending = useMemo(() => queue.filter((item) => item.status === "pending").length, [queue]);
@@ -84,81 +107,121 @@ export default function HomePage() {
   }
 
   return (
-    <main className="min-h-screen px-4 py-5 sm:px-8 xl:px-10">
-      <div className="mx-auto max-w-7xl">
-        <header className="mb-6 flex flex-col gap-4 border-b border-[var(--line)] pb-5 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex items-center gap-3">
-            <div className="grid h-12 w-12 place-items-center rounded-md bg-[#004CFF] text-lg font-black tracking-[-0.08em] text-white">KF</div>
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#004CFF]">Kristen Forti</p>
-              <h1 className="text-3xl font-semibold tracking-tight text-[var(--ink)]">Kristen's Excellent OS</h1>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {["Home", "Capture", "Review", "Memory", "Writing", "Ideas", "LSAT", "Career"].map((item) => <Badge key={item} tone="blue">{item}</Badge>)}
-          </div>
-        </header>
-
-        <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-          <div className="space-y-6">
-            <Card className="border-[#004CFF]/25 bg-white">
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#004CFF]">Universal Capture</p>
-              <h2 className="mt-2 text-2xl font-semibold">Dump first. Sort later.</h2>
-              <textarea className="field mt-4 min-h-36" value={capture} onChange={(event) => setCapture(event.target.value)} placeholder="Dump a thought, task, devotional note, LSAT pattern, workout, media link, or writing fragment." />
-              <div className="mt-3 flex flex-wrap items-center gap-3">
-                <button onClick={submitCapture} className="rounded-md border border-[#004CFF] bg-[#004CFF] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#003fd4]">Submit to AI review</button>
-                <span className="text-sm text-[var(--muted)]">Mock AI extracts suggestions. Nothing files without approval.</span>
+    <main style={themeVars(mode)} className="min-h-screen bg-[var(--app-bg)] text-[var(--text)] transition-colors">
+      <div className="flex min-h-screen flex-col lg:flex-row">
+        <aside className="border-b border-[var(--line-local)] bg-[var(--sidebar)] px-4 py-4 lg:sticky lg:top-0 lg:h-screen lg:w-64 lg:border-b-0 lg:border-r lg:px-5 lg:py-6">
+          <div className="flex items-center justify-between gap-3 lg:block">
+            <div className="flex items-center gap-3">
+              <div className="grid h-10 w-10 place-items-center rounded-lg bg-[#004CFF] text-sm font-black tracking-[-0.08em] text-white">KF</div>
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#004CFF]">Kristen Forti</p>
+                <p className="text-sm font-semibold text-[var(--text)]">Excellent OS</p>
               </div>
-            </Card>
+            </div>
+            <button onClick={() => setMode(mode === "light" ? "dark" : "light")} className="rounded-md border border-[var(--line-local)] bg-[var(--surface-strong)] px-3 py-2 text-xs font-semibold text-[var(--text)] lg:mt-5 lg:w-full">
+              {mode === "light" ? "Dark mode" : "Light mode"}
+            </button>
+          </div>
 
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-              <Card><p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--muted)]">Review queue</p><p className="mt-2 text-3xl font-semibold">{pending}</p><p className="text-sm text-[var(--muted)]">AI suggestions pending</p></Card>
-              <Card><p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--muted)]">LSAT</p><p className="mt-2 text-3xl font-semibold">55m</p><p className="text-sm text-[var(--muted)]">Latest LR session</p></Card>
-              <Card><p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--muted)]">Mileage</p><p className="mt-2 text-3xl font-semibold">7.3</p><p className="text-sm text-[var(--muted)]">Weekly running</p></Card>
-              <Card><p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--muted)]">Writing</p><p className="mt-2 text-3xl font-semibold">3</p><p className="text-sm text-[var(--muted)]">Fragments ready</p></Card>
+          <nav className="mt-5 hidden gap-5 lg:grid">
+            {navGroups.map((group) => (
+              <div key={group.title}>
+                <p className="mb-2 px-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--faint)]">{group.title}</p>
+                <div className="grid gap-1">
+                  {group.items.map((item) => (
+                    <a key={item} href="#" className={`rounded-lg px-3 py-2 text-sm ${item === "Home" ? "bg-[#004CFF] text-white" : "text-[var(--muted-local)] hover:bg-[var(--subtle)] hover:text-[var(--text)]"}`}>{item}</a>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </nav>
+        </aside>
+
+        <section className="flex-1">
+          <form onSubmit={(event) => { event.preventDefault(); submitCapture(); }} className="sticky top-0 z-10 border-b border-[var(--line-local)] bg-[var(--sidebar)]/92 px-4 py-3 backdrop-blur lg:px-6">
+            <div className="mx-auto flex max-w-6xl flex-col gap-3 sm:flex-row sm:items-center">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#004CFF]">Universal Capture</p>
+              <input value={capture} onChange={(event) => setCapture(event.target.value)} className="min-h-10 flex-1 rounded-lg border border-[var(--line-local)] bg-[var(--surface-strong)] px-3 text-sm text-[var(--text)] outline-none placeholder:text-[var(--faint)]" placeholder="Capture anything - thought, task, note, question, link, workout, LSAT pattern..." />
+              <button className="rounded-lg bg-[#004CFF] px-4 py-2 text-sm font-semibold text-white hover:bg-[#003fd4]">Add</button>
+            </div>
+          </form>
+
+          <div className="mx-auto max-w-6xl px-4 py-6 lg:px-6">
+            <header className="mb-6 flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#004CFF]">Command Center</p>
+                <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Good morning, Kristen.</h1>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted-local)]">Start with what needs attention, then move into writing, memory, and the deeper vaults when you are ready.</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Badge tone="green">AI suggests</Badge>
+                <Badge tone="blue">You approve</Badge>
+                <Badge tone="tan">Mock data</Badge>
+              </div>
+            </header>
+
+            <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              <Card><p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--faint)]">Review Queue</p><p className="mt-2 text-3xl font-semibold">{pending}</p><p className="text-sm text-[var(--muted-local)]">Suggestions waiting</p></Card>
+              <Card><p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--faint)]">LSAT</p><p className="mt-2 text-3xl font-semibold">55m</p><p className="text-sm text-[var(--muted-local)]">Latest LR session</p></Card>
+              <Card><p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--faint)]">Running</p><p className="mt-2 text-3xl font-semibold">7.3</p><p className="text-sm text-[var(--muted-local)]">Miles this week</p></Card>
+              <Card><p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--faint)]">Writing</p><p className="mt-2 text-3xl font-semibold">3</p><p className="text-sm text-[var(--muted-local)]">Fragments ready</p></Card>
             </div>
 
-            <Card>
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#7B0F2E]">Today's top 3 priorities</p>
-              <div className="mt-3 grid gap-3">
-                {priorities.map((priority) => <div key={priority} className="flex items-center justify-between gap-3 rounded-md border border-[var(--line)] bg-[#FAF7F1] p-3"><span className="font-semibold">{priority}</span><Badge tone="burgundy">execute</Badge></div>)}
-              </div>
-            </Card>
-
-            <Card>
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#004CFF]">AI Review Queue</p>
-              <div className="mt-3 grid gap-3">
-                {queue.map((item) => (
-                  <div key={item.id} className="rounded-md border border-[var(--line)] bg-[#FAF7F1] p-3">
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div><Badge tone={item.status === "approved" ? "green" : "tan"}>{item.type}</Badge><p className="mt-2 font-semibold">{item.text}</p><p className="text-sm text-[var(--muted)]">Destination: {item.destination} - Confidence {item.confidence}%</p></div>
-                      <Badge tone={item.status === "approved" ? "green" : "blue"}>{item.status}</Badge>
-                    </div>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      <button className="rounded-md bg-[#004CFF] px-3 py-2 text-xs font-semibold text-white" onClick={() => setStatus(item.id, "approved")}>Approve</button>
-                      <button className="rounded-md bg-[#21A85B] px-3 py-2 text-xs font-semibold text-white" onClick={() => setStatus(item.id, "edited")}>Edit</button>
-                      <button className="rounded-md bg-[#7B0F2E] px-3 py-2 text-xs font-semibold text-white" onClick={() => setStatus(item.id, "deleted")}>Delete</button>
-                      <button className="rounded-md border border-[var(--line)] bg-white px-3 py-2 text-xs font-semibold" onClick={() => setStatus(item.id, "reclassified")}>Reclassify</button>
-                    </div>
+            <div className="grid gap-6 xl:grid-cols-[minmax(0,1.5fr)_minmax(320px,0.85fr)]">
+              <div className="space-y-6">
+                <Card>
+                  <div className="mb-4 flex items-center justify-between gap-3">
+                    <div><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#7B0F2E]">Start Here</p><h2 className="text-lg font-semibold">Today needs your attention</h2></div>
+                    <Badge tone="burgundy">3 priorities</Badge>
                   </div>
-                ))}
-              </div>
-            </Card>
-          </div>
+                  <div className="grid gap-3">
+                    {priorities.map((priority) => (
+                      <div key={priority.title} className="flex items-center justify-between gap-3 rounded-lg border border-[var(--line-local)] bg-[var(--subtle)] p-3">
+                        <div><p className="font-semibold">{priority.title}</p><p className="text-sm text-[var(--muted-local)]">{priority.area}</p></div>
+                        <Badge tone={priority.tone}>{priority.area}</Badge>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
 
-          <aside className="space-y-6">
-            <Card>
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#16C7C1]">AI Insights</p>
-              <div className="mt-3 space-y-3">{insights.map((insight) => <p key={insight} className="rounded-md border border-[var(--line)] bg-white p-3 text-sm leading-6 text-[var(--muted)]">{insight}</p>)}</div>
-            </Card>
-            <Card>
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#21A85B]">Memory patterns</p>
-              <div className="mt-3 grid gap-2"><Badge tone="blue">Excellence 12x</Badge><Badge tone="turquoise">Beauty and truth 7x</Badge><Badge tone="rose">Disciplined warmth 5x</Badge></div>
-            </Card>
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-1">
-              {modules.map(([title, body]) => <Card key={title}><div className="flex items-center justify-between gap-3"><h3 className="font-semibold">{title}</h3><Badge tone="tan">mock</Badge></div><p className="mt-2 text-sm leading-6 text-[var(--muted)]">{body}</p></Card>)}
+                <Card>
+                  <div className="mb-4 flex items-center justify-between gap-3">
+                    <div><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#004CFF]">Review</p><h2 className="text-lg font-semibold">AI suggestions, not auto-filing</h2></div>
+                    <Badge tone="blue">Approve first</Badge>
+                  </div>
+                  <div className="grid gap-3">
+                    {queue.slice(0, 5).map((item) => (
+                      <div key={item.id} className="rounded-lg border border-[var(--line-local)] bg-[var(--subtle)] p-3">
+                        <div className="flex flex-wrap items-start justify-between gap-3">
+                          <div><Badge tone={item.status === "approved" ? "green" : "tan"}>{item.type}</Badge><p className="mt-2 font-semibold">{item.text}</p><p className="text-sm text-[var(--muted-local)]">Destination: {item.destination} - Confidence {item.confidence}%</p></div>
+                          <Badge tone={item.status === "approved" ? "green" : "blue"}>{item.status}</Badge>
+                        </div>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          <button type="button" className="rounded-md bg-[#004CFF] px-3 py-2 text-xs font-semibold text-white" onClick={() => setStatus(item.id, "approved")}>Approve</button>
+                          <button type="button" className="rounded-md bg-[#21A85B] px-3 py-2 text-xs font-semibold text-white" onClick={() => setStatus(item.id, "edited")}>Edit</button>
+                          <button type="button" className="rounded-md bg-[#7B0F2E] px-3 py-2 text-xs font-semibold text-white" onClick={() => setStatus(item.id, "deleted")}>Delete</button>
+                          <button type="button" className="rounded-md border border-[var(--line-local)] bg-[var(--surface-strong)] px-3 py-2 text-xs font-semibold" onClick={() => setStatus(item.id, "reclassified")}>Reclassify</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              </div>
+
+              <aside className="space-y-6">
+                <Card>
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#16C7C1]">AI Brief</p>
+                  <div className="mt-3 space-y-3">{insights.map((insight) => <p key={insight} className="rounded-lg border border-[var(--line-local)] bg-[var(--surface-strong)] p-3 text-sm leading-6 text-[var(--muted-local)]">{insight}</p>)}</div>
+                </Card>
+                <Card>
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#21A85B]">Map of the OS</p>
+                  <div className="mt-3 grid gap-3">
+                    {modules.map(([title, body], index) => <div key={title} className="rounded-lg border border-[var(--line-local)] bg-[var(--subtle)] p-3"><div className="flex items-center justify-between"><h3 className="font-semibold">{title}</h3><span className="text-xs font-semibold text-[var(--faint)]">0{index + 1}</span></div><p className="mt-1 text-sm leading-5 text-[var(--muted-local)]">{body}</p></div>)}
+                  </div>
+                </Card>
+              </aside>
             </div>
-          </aside>
+          </div>
         </section>
       </div>
     </main>
