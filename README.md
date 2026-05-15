@@ -1,36 +1,32 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Kristen's Excellent OS
 
-## Getting Started
+A personal AI operating system for capture, memory, writing, ideas, daily execution, LSAT prep, faith, fitness, career, people, calendar planning, and future integrations.
 
-First, run the development server:
+## MVP
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+This branch contains a first remote-preview MVP of the personal OS. It is intentionally mock-data first and integration-ready rather than database/API-heavy.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Core principles:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Capture everything.
+- Extract meaning from chaos.
+- AI suggests; Kristen approves.
+- Organize without forcing every idea into a task.
+- Surface patterns, themes, and next actions.
+- Keep the system bright, precise, and high-agency.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Current Flow
 
-## Learn More
+1. Open the command center.
+2. Dump a thought into Universal Capture.
+3. See mock AI extraction suggestions appear in the review queue.
+4. Approve, edit, delete, or reclassify suggestions.
+5. Review modules for memory, writing, ideas, media, daily life, LSAT, fitness, career, people, calendar, and integrations.
 
-To learn more about Next.js, take a look at the following resources:
+## Brand Direction
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The interface follows the Kristen Forti brand brief: royal blue leads, ivory/white keeps the system bright, green signals aligned action, turquoise supports creative insight, rose marks relational/personal spaces, burgundy marks serious review and standards, and tan grounds reflective/archive contexts.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Future Architecture
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The central object should remain `Capture`. A real backend can later persist captures and extracted objects in Supabase, while OpenAI replaces the mock extraction layer with classification, synthesis, embeddings, and semantic search.
