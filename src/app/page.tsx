@@ -11,10 +11,10 @@ type Suggestion = {
   status: "pending" | "approved" | "edited" | "deleted" | "reclassified";
 };
 
-type Tone = "blue" | "green" | "turquoise" | "rose" | "burgundy" | "tan";
+type Tone = "blue" | "green" | "teal" | "mint" | "tan";
 
 const navGroups = [
-  { title: "Start", items: ["Home", "Capture", "Review", "Memory"] },
+  { title: "", items: ["Home", "Review", "Memory"] },
   { title: "Create", items: ["Writing", "Ideas", "Media"] },
   { title: "Life", items: ["Daily", "Faith", "LSAT", "Fitness"] },
   { title: "World", items: ["Career", "People", "Calendar", "Integrations"] },
@@ -22,7 +22,7 @@ const navGroups = [
 
 const priorities = [
   { title: "Review 5 AI suggestions", area: "Review", tone: "blue" as Tone },
-  { title: "Outline excellence essay", area: "Writing", tone: "turquoise" as Tone },
+  { title: "Outline excellence essay", area: "Writing", tone: "teal" as Tone },
   { title: "45 minute LR drill", area: "LSAT", tone: "green" as Tone },
 ];
 
@@ -54,23 +54,21 @@ function classifyCapture(text: string): Suggestion[] {
   if (t.includes("essay") || t.includes("substack") || t.includes("write") || t.includes("beauty") || t.includes("truth")) add("writing fragment", "Writing", "Preserve this as a writing fragment and suggest an essay angle.", 90);
   if (t.includes("idea") || t.includes("business") || t.includes("product") || t.includes("system")) add("idea", "Ideas", "Store this as an idea without forcing it into a task.", 82);
   if (t.includes("tomorrow") || t.includes("deadline") || t.includes("schedule") || t.includes("block")) add("calendar option", "Calendar", "Suggest a calendar block or reminder for the time-sensitive part.", 78);
-  if (!suggestions.length) {
-    add("raw thought", "Review", "Keep this in review until the destination is clear.", 64);
-  }
+  if (!suggestions.length) add("raw thought", "Review", "Keep this in review until the destination is clear.", 64);
   return suggestions;
 }
 
 function themeVars(mode: "light" | "dark") {
   return {
-    "--app-bg": mode === "light" ? "#f6f3ed" : "#11100e",
-    "--sidebar": mode === "light" ? "#fffdf8" : "#171512",
-    "--surface": mode === "light" ? "rgba(255,255,255,0.84)" : "rgba(31,29,25,0.88)",
-    "--surface-strong": mode === "light" ? "#ffffff" : "#211f1b",
-    "--subtle": mode === "light" ? "#faf7f1" : "#191713",
-    "--line-local": mode === "light" ? "#e5ddd1" : "#353129",
-    "--text": mode === "light" ? "#171512" : "#f2eadf",
-    "--muted-local": mode === "light" ? "#6f675c" : "#a79b8d",
-    "--faint": mode === "light" ? "#948b80" : "#756a5f",
+    "--app-bg": mode === "light" ? "#f6f3ed" : "#101412",
+    "--sidebar": mode === "light" ? "#fffdf8" : "#151a17",
+    "--surface": mode === "light" ? "rgba(255,255,255,0.84)" : "rgba(27,33,30,0.9)",
+    "--surface-strong": mode === "light" ? "#ffffff" : "#1f2722",
+    "--subtle": mode === "light" ? "#faf7f1" : "#18201c",
+    "--line-local": mode === "light" ? "#e5ddd1" : "#303b35",
+    "--text": mode === "light" ? "#171512" : "#f0f4ef",
+    "--muted-local": mode === "light" ? "#6f675c" : "#a4aea6",
+    "--faint": mode === "light" ? "#948b80" : "#78847c",
   } as CSSProperties & Record<string, string>;
 }
 
@@ -82,9 +80,8 @@ function Badge({ children, tone = "blue" }: { children: ReactNode; tone?: Tone }
   const tones = {
     blue: "border-[#004CFF]/25 bg-[#004CFF]/10 text-[#004CFF]",
     green: "border-[#21A85B]/25 bg-[#21A85B]/10 text-[#157a42]",
-    turquoise: "border-[#16C7C1]/25 bg-[#16C7C1]/12 text-[#0b7774]",
-    rose: "border-[#F4B7C6]/45 bg-[#F4B7C6]/28 text-[#8b3150]",
-    burgundy: "border-[#7B0F2E]/25 bg-[#7B0F2E]/10 text-[#7B0F2E]",
+    teal: "border-[#16C7C1]/25 bg-[#16C7C1]/12 text-[#0b7774]",
+    mint: "border-[#76C893]/30 bg-[#76C893]/14 text-[#2d7d4e]",
     tan: "border-[#D6B98C]/40 bg-[#D6B98C]/20 text-[#755d35]",
   };
   return <span className={`inline-flex rounded-md border px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] ${tones[tone]}`}>{children}</span>;
@@ -109,27 +106,31 @@ export default function HomePage() {
   return (
     <main style={themeVars(mode)} className="min-h-screen bg-[var(--app-bg)] text-[var(--text)] transition-colors">
       <div className="flex min-h-screen flex-col lg:flex-row">
-        <aside className="border-b border-[var(--line-local)] bg-[var(--sidebar)] px-4 py-4 lg:sticky lg:top-0 lg:h-screen lg:w-64 lg:border-b-0 lg:border-r lg:px-5 lg:py-6">
-          <div className="flex items-center justify-between gap-3 lg:block">
+        <aside className="border-b border-[var(--line-local)] bg-[var(--sidebar)] px-4 py-4 lg:sticky lg:top-0 lg:h-screen lg:w-60 lg:overflow-y-auto lg:border-b-0 lg:border-r lg:px-4 lg:py-4">
+          <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-lg bg-[#004CFF] text-sm font-black tracking-[-0.08em] text-white">KF</div>
+              <div className="grid h-9 w-9 place-items-center rounded-lg bg-[#004CFF] text-sm font-black tracking-[-0.08em] text-white">KF</div>
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#004CFF]">Kristen Forti</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#004CFF]">Kristen Forti</p>
                 <p className="text-sm font-semibold text-[var(--text)]">Excellent OS</p>
               </div>
             </div>
-            <button onClick={() => setMode(mode === "light" ? "dark" : "light")} className="rounded-md border border-[var(--line-local)] bg-[var(--surface-strong)] px-3 py-2 text-xs font-semibold text-[var(--text)] lg:mt-5 lg:w-full">
-              {mode === "light" ? "Dark mode" : "Light mode"}
+            <button
+              onClick={() => setMode(mode === "light" ? "dark" : "light")}
+              title={mode === "light" ? "Switch to dark mode" : "Switch to light mode"}
+              className="grid h-7 w-7 place-items-center rounded-full border border-[var(--line-local)] bg-[var(--surface-strong)] text-[10px] font-bold text-[var(--muted-local)]"
+            >
+              {mode === "light" ? "D" : "L"}
             </button>
           </div>
 
-          <nav className="mt-5 hidden gap-5 lg:grid">
+          <nav className="mt-4 hidden gap-4 lg:grid">
             {navGroups.map((group) => (
-              <div key={group.title}>
-                <p className="mb-2 px-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--faint)]">{group.title}</p>
-                <div className="grid gap-1">
+              <div key={group.title || "primary"}>
+                {group.title ? <p className="mb-1.5 px-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--faint)]">{group.title}</p> : null}
+                <div className="grid gap-0.5">
                   {group.items.map((item) => (
-                    <a key={item} href="#" className={`rounded-lg px-3 py-2 text-sm ${item === "Home" ? "bg-[#004CFF] text-white" : "text-[var(--muted-local)] hover:bg-[var(--subtle)] hover:text-[var(--text)]"}`}>{item}</a>
+                    <a key={item} href="#" className={`rounded-lg px-2.5 py-1.5 text-sm ${item === "Home" ? "bg-[#004CFF] text-white" : "text-[var(--muted-local)] hover:bg-[var(--subtle)] hover:text-[var(--text)]"}`}>{item}</a>
                   ))}
                 </div>
               </div>
@@ -139,9 +140,8 @@ export default function HomePage() {
 
         <section className="flex-1">
           <form onSubmit={(event) => { event.preventDefault(); submitCapture(); }} className="sticky top-0 z-10 border-b border-[var(--line-local)] bg-[var(--sidebar)]/92 px-4 py-3 backdrop-blur lg:px-6">
-            <div className="mx-auto flex max-w-6xl flex-col gap-3 sm:flex-row sm:items-center">
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#004CFF]">Universal Capture</p>
-              <input value={capture} onChange={(event) => setCapture(event.target.value)} className="min-h-10 flex-1 rounded-lg border border-[var(--line-local)] bg-[var(--surface-strong)] px-3 text-sm text-[var(--text)] outline-none placeholder:text-[var(--faint)]" placeholder="Capture anything - thought, task, note, question, link, workout, LSAT pattern..." />
+            <div className="mx-auto flex max-w-6xl gap-2 sm:items-center">
+              <input value={capture} onChange={(event) => setCapture(event.target.value)} className="min-h-10 flex-1 rounded-lg border border-[var(--line-local)] bg-[var(--surface-strong)] px-3 text-sm text-[var(--text)] outline-none placeholder:text-[var(--faint)]" aria-label="Capture" placeholder="" />
               <button className="rounded-lg bg-[#004CFF] px-4 py-2 text-sm font-semibold text-white hover:bg-[#003fd4]">Add</button>
             </div>
           </form>
@@ -156,7 +156,7 @@ export default function HomePage() {
               <div className="flex flex-wrap gap-2">
                 <Badge tone="green">AI suggests</Badge>
                 <Badge tone="blue">You approve</Badge>
-                <Badge tone="tan">Mock data</Badge>
+                <Badge tone="mint">Clean review</Badge>
               </div>
             </header>
 
@@ -171,8 +171,8 @@ export default function HomePage() {
               <div className="space-y-6">
                 <Card>
                   <div className="mb-4 flex items-center justify-between gap-3">
-                    <div><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#7B0F2E]">Start Here</p><h2 className="text-lg font-semibold">Today needs your attention</h2></div>
-                    <Badge tone="burgundy">3 priorities</Badge>
+                    <div><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#004CFF]">Start Here</p><h2 className="text-lg font-semibold">Today needs your attention</h2></div>
+                    <Badge tone="blue">3 priorities</Badge>
                   </div>
                   <div className="grid gap-3">
                     {priorities.map((priority) => (
@@ -194,13 +194,13 @@ export default function HomePage() {
                       <div key={item.id} className="rounded-lg border border-[var(--line-local)] bg-[var(--subtle)] p-3">
                         <div className="flex flex-wrap items-start justify-between gap-3">
                           <div><Badge tone={item.status === "approved" ? "green" : "tan"}>{item.type}</Badge><p className="mt-2 font-semibold">{item.text}</p><p className="text-sm text-[var(--muted-local)]">Destination: {item.destination} - Confidence {item.confidence}%</p></div>
-                          <Badge tone={item.status === "approved" ? "green" : "blue"}>{item.status}</Badge>
+                          <Badge tone={item.status === "approved" ? "green" : item.status === "deleted" ? "tan" : "blue"}>{item.status}</Badge>
                         </div>
                         <div className="mt-3 flex flex-wrap gap-2">
                           <button type="button" className="rounded-md bg-[#004CFF] px-3 py-2 text-xs font-semibold text-white" onClick={() => setStatus(item.id, "approved")}>Approve</button>
                           <button type="button" className="rounded-md bg-[#21A85B] px-3 py-2 text-xs font-semibold text-white" onClick={() => setStatus(item.id, "edited")}>Edit</button>
-                          <button type="button" className="rounded-md bg-[#7B0F2E] px-3 py-2 text-xs font-semibold text-white" onClick={() => setStatus(item.id, "deleted")}>Delete</button>
-                          <button type="button" className="rounded-md border border-[var(--line-local)] bg-[var(--surface-strong)] px-3 py-2 text-xs font-semibold" onClick={() => setStatus(item.id, "reclassified")}>Reclassify</button>
+                          <button type="button" className="rounded-md border border-[var(--line-local)] bg-[var(--surface-strong)] px-3 py-2 text-xs font-semibold text-[var(--muted-local)]" onClick={() => setStatus(item.id, "deleted")}>Delete</button>
+                          <button type="button" className="rounded-md border border-[#004CFF]/25 bg-[#004CFF]/10 px-3 py-2 text-xs font-semibold text-[#004CFF]" onClick={() => setStatus(item.id, "reclassified")}>Reclassify</button>
                         </div>
                       </div>
                     ))}
