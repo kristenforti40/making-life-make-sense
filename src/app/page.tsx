@@ -16,8 +16,8 @@ type Tone = "blue" | "green" | "teal" | "mint" | "tan";
 const navGroups = [
   { title: "", items: ["Home", "Review", "Memory"] },
   { title: "Create", items: ["Writing", "Ideas", "Media"] },
-  { title: "Life", items: ["Daily", "Faith", "LSAT", "Fitness"] },
-  { title: "World", items: ["Career", "People", "Calendar", "Integrations"] },
+  { title: "Practice", items: ["Daily", "Faith", "LSAT", "Fitness"] },
+  { title: "People & Plans", items: ["Career", "People", "Calendar", "Integrations"] },
 ];
 
 const priorities = [
@@ -38,7 +38,15 @@ const modules = [
 const insights = [
   "Excellence is recurring as a standards theme, not just a productivity theme.",
   "Beauty, truth, and reputation keep connecting to writing and career decisions.",
-  "Your system should separate urgent execution from slow-burn incubation.",
+  "Separate urgent execution from slow-burn incubation. Both belong here.",
+];
+
+const dailyStandards = [
+  "Quality is built by what you repeat when nobody is checking.",
+  "The next clear action is usually kinder than the perfect plan.",
+  "Let the system hold the noise so your attention can hold the work.",
+  "A good standard should make action cleaner, not heavier.",
+  "Capture first. Discern second. Execute only what deserves it.",
 ];
 
 function classifyCapture(text: string): Suggestion[] {
@@ -60,15 +68,15 @@ function classifyCapture(text: string): Suggestion[] {
 
 function themeVars(mode: "light" | "dark") {
   return {
-    "--app-bg": mode === "light" ? "#f6f3ed" : "#101412",
-    "--sidebar": mode === "light" ? "#fffdf8" : "#151a17",
-    "--surface": mode === "light" ? "rgba(255,255,255,0.84)" : "rgba(27,33,30,0.9)",
-    "--surface-strong": mode === "light" ? "#ffffff" : "#1f2722",
-    "--subtle": mode === "light" ? "#faf7f1" : "#18201c",
-    "--line-local": mode === "light" ? "#e5ddd1" : "#303b35",
-    "--text": mode === "light" ? "#171512" : "#f0f4ef",
-    "--muted-local": mode === "light" ? "#6f675c" : "#a4aea6",
-    "--faint": mode === "light" ? "#948b80" : "#78847c",
+    "--app-bg": mode === "light" ? "#f6f3ed" : "#111712",
+    "--sidebar": mode === "light" ? "#fffdf8" : "#151c17",
+    "--surface": mode === "light" ? "rgba(255,255,255,0.84)" : "rgba(27,35,30,0.9)",
+    "--surface-strong": mode === "light" ? "#ffffff" : "#202922",
+    "--subtle": mode === "light" ? "#faf7f1" : "#19221d",
+    "--line-local": mode === "light" ? "#e5ddd1" : "#334138",
+    "--text": mode === "light" ? "#171512" : "#dce5dc",
+    "--muted-local": mode === "light" ? "#6f675c" : "#a1aca3",
+    "--faint": mode === "light" ? "#948b80" : "#76847a",
   } as CSSProperties & Record<string, string>;
 }
 
@@ -92,6 +100,7 @@ export default function HomePage() {
   const [capture, setCapture] = useState("Substack idea: excellence is quality control over time. Follow up with Sarah and schedule a 45 minute LSAT drill tomorrow.");
   const [queue, setQueue] = useState<Suggestion[]>(() => classifyCapture(capture));
   const pending = useMemo(() => queue.filter((item) => item.status === "pending").length, [queue]);
+  const dailyStandard = dailyStandards[new Date().getDay() % dailyStandards.length];
 
   function submitCapture() {
     if (!capture.trim()) return;
@@ -147,23 +156,22 @@ export default function HomePage() {
           </form>
 
           <div className="mx-auto max-w-6xl px-4 py-6 lg:px-6">
-            <header className="mb-6 flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+            <header className="mb-6 grid gap-4 xl:grid-cols-[minmax(0,1fr)_360px] xl:items-end">
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#004CFF]">Command Center</p>
-                <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Good morning, Kristen.</h1>
+                <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Good morning, Kristen.</h1>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted-local)]">Start with what needs attention, then move into writing, memory, and the deeper vaults when you are ready.</p>
               </div>
-              <div className="flex flex-wrap gap-2">
-                <Badge tone="green">AI suggests</Badge>
-                <Badge tone="blue">You approve</Badge>
-                <Badge tone="mint">Clean review</Badge>
-              </div>
+              <Card className="bg-[var(--surface-strong)]">
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#004CFF]">Daily Standard</p>
+                <p className="mt-2 text-sm leading-6 text-[var(--muted-local)]">{dailyStandard}</p>
+              </Card>
             </header>
 
-            <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
               <Card><p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--faint)]">Review Queue</p><p className="mt-2 text-3xl font-semibold">{pending}</p><p className="text-sm text-[var(--muted-local)]">Suggestions waiting</p></Card>
               <Card><p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--faint)]">LSAT</p><p className="mt-2 text-3xl font-semibold">55m</p><p className="text-sm text-[var(--muted-local)]">Latest LR session</p></Card>
               <Card><p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--faint)]">Running</p><p className="mt-2 text-3xl font-semibold">7.3</p><p className="text-sm text-[var(--muted-local)]">Miles this week</p></Card>
+              <Card><p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--faint)]">Streak</p><p className="mt-2 text-3xl font-semibold">4</p><p className="text-sm text-[var(--muted-local)]">Study days</p></Card>
               <Card><p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--faint)]">Writing</p><p className="mt-2 text-3xl font-semibold">3</p><p className="text-sm text-[var(--muted-local)]">Fragments ready</p></Card>
             </div>
 
@@ -210,11 +218,12 @@ export default function HomePage() {
 
               <aside className="space-y-6">
                 <Card>
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#16C7C1]">AI Brief</p>
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#004CFF]">Daily Brief</p>
                   <div className="mt-3 space-y-3">{insights.map((insight) => <p key={insight} className="rounded-lg border border-[var(--line-local)] bg-[var(--surface-strong)] p-3 text-sm leading-6 text-[var(--muted-local)]">{insight}</p>)}</div>
                 </Card>
                 <Card>
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#21A85B]">Map of the OS</p>
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#21A85B]">System Map</p>
+                  <p className="mt-1 text-xs leading-5 text-[var(--muted-local)]">Temporary map for the MVP. Later these become live views with real counts, destinations, and actions.</p>
                   <div className="mt-3 grid gap-3">
                     {modules.map(([title, body], index) => <div key={title} className="rounded-lg border border-[var(--line-local)] bg-[var(--subtle)] p-3"><div className="flex items-center justify-between"><h3 className="font-semibold">{title}</h3><span className="text-xs font-semibold text-[var(--faint)]">0{index + 1}</span></div><p className="mt-1 text-sm leading-5 text-[var(--muted-local)]">{body}</p></div>)}
                   </div>
